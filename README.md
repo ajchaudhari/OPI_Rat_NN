@@ -42,8 +42,14 @@ Output Data for neural network:
 ### 1.	Install all required programs (see above).
 1. For 3D Slicer: need to install python libraries in the python console
   1. After installing 3D Slicer, open python console by clicking on the python button on the far right-hand side of the tool bar (see red circle below)
-  2. Click inside the python console at the bottom of the window (see red arrow below)
-  3. Install pandas, nibabel, re in 3D Slicer by typing in the following lines of code 
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture1.png)
+
+  3. Click inside the python console at the bottom of the window (see red arrow below)
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture2.png)
+
+  5. Install pandas, nibabel, re in 3D Slicer by typing in the following lines of code 
 ```
 import os
 os.system('PythonSlicer -m pip install pandas')
@@ -55,16 +61,20 @@ os.system('PythonSlicer -m pip install re')
 
 ### 2.	Pre-processing MR Images for Training:
 1. Make sure that the N4ITK MRI Bias correction module is installed in 3D Slicer. You can do this by opening 3D Slicer and clicking on the module search button (see red circle below)
-   Then, a window pop-up will appear and then, you can type N4ITK into the search bar
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture3.png)
+
+   Then, a window pop-up will appear and then, you can type N4ITK into the search bar.  
    Then, open “N4ITK MRI Bias correction” module. This should automatically be installed, but if this module does not appear in the list, you will need to install it.
-2. Close 3D Slicer and open BatchN4ITKBiasCorrection.py in a python code editing software. I prefer python IDLE.
-3. On line 143: edit path2images variable with path to MR image locations. I recommend that this is not your final image folder that you will use to input the images into the neural network, since there are multiple preprocessing steps to perform before we get to training the network.
-4. (Optional): You can add a mask/label image for the N4ITK algorithm to only be applied with where the mask > 0. Be sure to edit “path2mask”, line 146, and replace the string with your path, and change “MaskAvailable”, line 151, to True.
+   
+3. Close 3D Slicer and open BatchN4ITKBiasCorrection.py in a python code editing software. I prefer python IDLE.
+4. On line 143: edit path2images variable with path to MR image locations. I recommend that this is not your final image folder that you will use to input the images into the neural network, since there are multiple preprocessing steps to perform before we get to training the network.
+5. (Optional): You can add a mask/label image for the N4ITK algorithm to only be applied with where the mask > 0. Be sure to edit “path2mask”, line 146, and replace the string with your path, and change “MaskAvailable”, line 151, to True.
    For our data, we did not use line 146 and set variable “MaskAvailable” = False . We gave “path2mask” a dummy path instead, but this may not be required.
-5. On line 149: edit path2output variable with path to the processed MR image folder location.
-6. (Optional): If you would like to save out the bias field image for each MR scan, you can set the “BiasFieldImage” variable to True. If you do not want to save it, set this variable to False.
-7. To run this code, save and close the code and open the command console.
-8. Entering this string: "path\to\Slicer.exe" --python-script "path\to\BatchN4ITKBiasCorrection.py" 
+6. On line 149: edit path2output variable with path to the processed MR image folder location.
+7. (Optional): If you would like to save out the bias field image for each MR scan, you can set the “BiasFieldImage” variable to True. If you do not want to save it, set this variable to False.
+8. To run this code, save and close the code and open the command console.
+9. Entering this string: "path\to\Slicer.exe" --python-script "path\to\BatchN4ITKBiasCorrection.py" 
 (an example of this string is shown on line 5 in the python code.
 
    The images will be saved to the location specified at step 2.5. Double check your data to see if the bias correction module was applied correctly. _BC will be added to the end of the filename for the processed image and _BF for the bias field images.
@@ -93,6 +103,9 @@ os.system('PythonSlicer -m pip install re')
 ### 7.	Running the Neural Network
 1. I typically run this code through IDLE by hitting F5 or hovering over the “Run” tab and then selecting “Run module”.
    A shell window should pop up and print all of the model and parameter values, as well print training progression lines.
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture4.png)
+
    ***_Note: A warning may pop-up:_** 
  ``` 
   “Warning (from warnings module):File "C:\Program Files\Python38\lib\site-packages\monai\data\utils.py", line ...
@@ -115,13 +128,26 @@ Notes:
 ### 9.	Perform Dice and Hausdorff Distance Calculations
 1.	3D Slicer has a module you can install called “SlicerRT” that has a “SegmentComparison” module that’s part of it, link to documentation: https://www.slicer.org/wiki/Documentation/Nightly/Modules/SegmentComparison. See step 2a for how to install a module in 3D Slicer. You will be searching for the “SlicerRT” module. There is also great documentation on the slicer.org website and YouTube on how to install modules.
 2.	Once you have SlicerRT installed, you can verify that you have the segmentationcomparison module installed by clicking on the module finder button:
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture5.png)
+
 3.	Type “Segment Comparison” to find the module and double click on the name:
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture6.png)
+
 4.	This is what the module should look like:
+
+![alt text](https://github.com/ajchaudhari/OPI_Rat_NN/blob/main/images%20for%20readme/Picture7.png)
+
    If you see this module gui on your screen, then you have successfully installed the module! You can close 3D Slicer now. 
+   
    I have created a batch code version that will call upon this module, but if you want to do it manually/practice what the input and out should be, then you can use the module directly in 3D Slicer first.
+   
 5.	Open BatchSegmentationComparisonMetrics.py
 6.	Go down to line 95, where “MUST Declare Variable Below” is written. Declare the directory paths. path2reference is for the directory to the original label images, path2segmentation is for the directory to the neural network generated label images, and path2output is for the directory to where you want the output .csv file to be saved.
-   csvfilename is the name for the csv file that will contain all of the dice coefficients and Hausdorff distances.
-7.	Side Note: on line 112, the code finds the first few letters of the input filenames that contains the animal ID or the part of the filenames that are same to verify that the two label images are for the same subject.  
-   You may need to change the element numbers within the brackets [first_element_num:last_element_num + 1] to match your ID system. For our case, our animal ID was 10 elements long, so we start at element 0 and go to element 11 (this function will not count the 11th element and stop at the 10th).  I recommend that you debug the code and double check that the code is finding the correct substring in the filenames before proceeding.
-8.	Now you can run the code by entering "path\to\Slicer.exe" --python-script "path\to\BatchSegmentationComparisonMetrics.py" in the windows command prompt window. See line 12 in the code file for more information.
+
+  	csvfilename is the name for the csv file that will contain all of the dice coefficients and Hausdorff distances.
+  	
+8.	Side Note: on line 112, the code finds the first few letters of the input filenames that contains the animal ID or the part of the filenames that are same to verify that the two label images are for the same subject.  
+   You may need to change the element numbers within the brackets [first_element_num:last_element_num + 1] to match your ID system. For our case, our animal ID was 10 elements long, so we start at element 0 and go to element 11 (this function will not count the 11th element and stop at the 10th).  I recommend that you debug the code and double check that the code is finding the correct substring in the filenames before proceeding.  
+9.	Now you can run the code by entering "path\to\Slicer.exe" --python-script "path\to\BatchSegmentationComparisonMetrics.py" in the windows command prompt window. See line 12 in the code file for more information.
