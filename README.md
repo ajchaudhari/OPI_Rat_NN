@@ -1,6 +1,7 @@
 # **OPI Rat Neural Network**
 ## Required Programs:
 - Python 3.8.6
+- CUDA 10.1
 - 3D Slicer (see step # for installation of python libraries in 3D Slicers.)
 - Imagej
 ## Python libraries to install:
